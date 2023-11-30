@@ -2,7 +2,7 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-#################### Mid point line algorithms:
+#################### Mid point line and circle algorithm:
 
 
 
