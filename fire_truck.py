@@ -9,10 +9,10 @@ from OpenGL.GLU import *
 
 #####################################
 def iterate():
-    glViewport(0, 0, 500, 500)
+    glViewport(0, 0, 800, 800)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glOrtho(0.0, 500, 0.0, 500, 0.0, 1.0)
+    glOrtho(0.0, 800, 0.0, 800, 0.0, 1.0)
     glMatrixMode (GL_MODELVIEW)
     glLoadIdentity()
 
