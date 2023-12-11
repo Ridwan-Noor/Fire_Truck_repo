@@ -1,181 +1,29 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-
-truck = [350, 0, 350, 200]
-houseOriginalColors = [[[218/255, 165/255, 32/255], [184/255, 134/255, 30/255]], [[255/255, 0/255, 128/255], [128/255, 0/255, 64/255]], [[191/255, 0/255, 255/255], [115/255, 0/255, 153/255]], [[51/255, 102/255, 255/255], [0/255, 45/255, 179/255]], [[138/255, 138/255, 92/255], [92/255, 92/255, 61/255]], [[117/255, 117/255, 163/255], [71/255, 71/255, 107/255]]]
-houseColors = [[[218/255, 165/255, 32/255], [184/255, 134/255, 30/255]], [[255/255, 0/255, 128/255], [128/255, 0/255, 64/255]], [[191/255, 0/255, 255/255], [115/255, 0/255, 153/255]], [[51/255, 102/255, 255/255], [0/255, 45/255, 179/255]], [[138/255, 138/255, 92/255], [92/255, 92/255, 61/255]], [[117/255, 117/255, 163/255], [71/255, 71/255, 107/255]]]
-
-houseHealth = [[0, 160, 150, 160], [0, 410, 150, 410], [0, 660, 150, 660], [650, 160, 800, 160], [650, 410, 800, 410], [650, 660, 800, 660]]
+import random
 
 
-def showHouseHealth():
-    global houseHealth
-    for i in range(len(houseHealth)):
-        glPointSize(15)
-        glColor3f(1, 0, 0)
-        MidPointLineAlgorithm(houseHealth[i][0], houseHealth[i][1], houseHealth[i][2], houseHealth[i][3])
+#truck = [350, 0]  #[350, 0, 350, 200]
+truck = {'x':400, 'y':400, 'direction':'up'}
+#houseOriginalColors = [[[218/255, 165/255, 32/255], [184/255, 134/255, 30/255]], [[255/255, 0/255, 128/255], [128/255, 0/255, 64/255]], [[191/255, 0/255, 255/255], [115/255, 0/255, 153/255]], [[51/255, 102/255, 255/255], [0/255, 45/255, 179/255]], [[138/255, 138/255, 92/255], [92/255, 92/255, 61/255]], [[117/255, 117/255, 163/255], [71/255, 71/255, 107/255]]]
+#houseColors = [[[218/255, 165/255, 32/255], [184/255, 134/255, 30/255]], [[255/255, 0/255, 128/255], [128/255, 0/255, 64/255]], [[191/255, 0/255, 255/255], [115/255, 0/255, 153/255]], [[51/255, 102/255, 255/255], [0/255, 45/255, 179/255]], [[138/255, 138/255, 92/255], [92/255, 92/255, 61/255]], [[117/255, 117/255, 163/255], [71/255, 71/255, 107/255]]]
 
+house_li = [
+    { 'x':0,'y':0, 'health':100, 'cond':'normal', 'color': [[218/255, 165/255, 32/255], [184/255, 134/255, 30/255]], 'originalColor': [[218/255, 165/255, 32/255], [184/255, 134/255, 30/255]]},
+    { 'x':0,'y':250, 'health':100, 'cond':'normal', 'color':[[255/255, 0/255, 128/255], [128/255, 0/255, 64/255]], 'originalColor':[[255/255, 0/255, 128/255], [128/255, 0/255, 64/255]]},
+    { 'x':0,'y':500, 'health':100, 'cond':'normal', 'color':[[191/255, 0/255, 255/255], [115/255, 0/255, 153/255]], 'originalColor':[[191/255, 0/255, 255/255], [115/255, 0/255, 153/255]] },
+    { 'x':650,'y':0, 'health':100, 'cond':'normal', 'color': [[51/255, 102/255, 255/255], [0/255, 45/255, 179/255]], 'originalColor':[[51/255, 102/255, 255/255], [0/255, 45/255, 179/255]]},
+    { 'x':650,'y':250, 'health':100, 'cond':'normal', 'color':[[138/255, 138/255, 92/255], [92/255, 92/255, 61/255]], 'originalColor':[[138/255, 138/255, 92/255], [92/255, 92/255, 61/255]] },
+    { 'x':650,'y':500, 'health':100, 'cond':'normal', 'color':[[117/255, 117/255, 163/255], [71/255, 71/255, 107/255]], 'originalColor':[[117/255, 117/255, 163/255], [71/255, 71/255, 107/255]] }
+]
 
-
-def showTruck():
-    global truck
-    glPointSize(5)
-    glColor3f(0, 0, 0)
-    MidPointCircleAlgorithm(truck[0], truck[1]+30, 5)
-    MidPointCircleAlgorithm(truck[0], truck[1]+15, 5)
-    MidPointCircleAlgorithm(truck[0], truck[1]+80, 5)
-    MidPointCircleAlgorithm(truck[0], truck[1]+95, 5)
-    MidPointCircleAlgorithm(truck[0]+80, truck[1]+30, 5)
-    MidPointCircleAlgorithm(truck[0]+80, truck[1]+15, 5)
-    MidPointCircleAlgorithm(truck[0]+80, truck[1]+80, 5)
-    MidPointCircleAlgorithm(truck[0]+80, truck[1]+95, 5)
-    glPointSize(4)
-    glColor3f(0, 0, 0)
-    MidPointLineAlgorithm(truck[0], truck[1], truck[0], truck[1]+120)
-    MidPointLineAlgorithm(truck[0], truck[1]+120, truck[0]+80, truck[1]+120)
-    MidPointLineAlgorithm(truck[0]+80, truck[1]+120, truck[0]+80, truck[1])
-    MidPointLineAlgorithm(truck[0], truck[1], truck[0]+80, truck[1])
-
-
-    glColor3f(179/255, 0, 0)
-    glPointSize(20)
-    MidPointLineAlgorithm(truck[0]+10, truck[1]+130, truck[0]+10, truck[1]+140)
-    MidPointLineAlgorithm(truck[0]+30, truck[1]+130, truck[0]+30, truck[1]+140)
-    MidPointLineAlgorithm(truck[0]+50, truck[1]+130, truck[0]+50, truck[1]+140)
-    MidPointLineAlgorithm(truck[0]+70, truck[1]+130, truck[0]+70, truck[1]+140)
-    glPointSize(5)
-    glColor3f(0, 0, 0)
-    MidPointLineAlgorithm(truck[0], truck[1]+120, truck[0]+80, truck[1]+120)
-    MidPointLineAlgorithm(truck[0], truck[1]+150, truck[0]+80, truck[1]+150)
-    MidPointLineAlgorithm(truck[0], truck[1]+120, truck[0], truck[1]+150)
-    MidPointLineAlgorithm(truck[0]+80, truck[1]+150, truck[0]+80, truck[1]+120)
-    glColor3f(204/255, 204/255, 204/255)
-    MidPointCircleAlgorithm(truck[0]+10, truck[1]+140, 3)
-    MidPointCircleAlgorithm(truck[0]+70, truck[1]+140, 3)
-
-    glPointSize(20)
-    glColor3f(200/255, 0, 0)
-    MidPointLineAlgorithm(truck[0]+10, truck[1]+5, truck[0]+10, truck[1]+105)
-    glColor3f(200/255, 0, 0) #
-    MidPointLineAlgorithm(truck[0]+20, truck[1]+5, truck[0]+20, truck[1]+105)
-    glColor3f(200/255, 0, 0)
-    MidPointLineAlgorithm(truck[0]+30, truck[1]+5, truck[0]+30, truck[1]+105)
-    glColor3f(200/255, 0, 0) #
-    MidPointLineAlgorithm(truck[0]+40, truck[1]+5, truck[0]+40, truck[1]+105)
-    glColor3f(200/255, 0, 0)
-    MidPointLineAlgorithm(truck[0]+50, truck[1]+5, truck[0]+50, truck[1]+105)
-    glColor3f(200/255, 0, 0) #
-    MidPointLineAlgorithm(truck[0]+60, truck[1]+5, truck[0]+60, truck[1]+105)
-    glColor3f(200/255, 0, 0)
-    MidPointLineAlgorithm(truck[0]+70, truck[1]+5, truck[0]+70, truck[1]+105)
-    glColor3f(200/255, 0, 0) #
-    MidPointLineAlgorithm(truck[0]+60, truck[1]+5, truck[0]+60, truck[1]+105)
-    glPointSize(5)
-    glColor3f(200/255, 51/255, 51/255)
-    MidPointCircleAlgorithm(truck[0]+40, truck[1]+135, 3)
-    glColor3f(0, 0, 0)
-
-
-    MidPointLineAlgorithm(truck[0]+10, truck[1]+105, truck[0]+10, truck[1]+10)
-    MidPointLineAlgorithm(truck[0]+20, truck[1]+105, truck[0]+20, truck[1]+10)
-    MidPointLineAlgorithm(truck[0]+30, truck[1]+105, truck[0]+30, truck[1]+10)
-    MidPointLineAlgorithm(truck[0]+40, truck[1]+105, truck[0]+40, truck[1]+10)
-    MidPointLineAlgorithm(truck[0]+50, truck[1]+105, truck[0]+50, truck[1]+10)
-    MidPointLineAlgorithm(truck[0]+60, truck[1]+105, truck[0]+60, truck[1]+10)
-    MidPointLineAlgorithm(truck[0]+70, truck[1]+105, truck[0]+70, truck[1]+10)
-
-
-    
-
-
-
-
-def buildHouse(x1, y1, x2, y2, x3, y3, x4, y4, color1, color2):
-    glPointSize(3)
-    glColor3f(*color1)
-    MidPointLineAlgorithm(x1+25, y1+20, x1+25, y1+135)
-    MidPointLineAlgorithm(x1+25, y1+135, x1+135, y1+135)
-    MidPointLineAlgorithm(x1+135, y1+135, x1+135, y1+20)
-    glPointSize(10)
-    MidPointLineAlgorithm(x1+30, y1+130, x1+130, y1+130)
-    MidPointLineAlgorithm(x1+30, y1+120, x1+130, y1+120)
-    MidPointLineAlgorithm(x1+30, y1+110, x1+30, y1+30)
-    MidPointLineAlgorithm(x1+60, y1+110, x1+60, y1+30)
-    MidPointLineAlgorithm(x1+70, y1+110, x1+70, y1+30)
-    MidPointLineAlgorithm(x1+80, y1+110, x1+80, y1+30)
-    MidPointLineAlgorithm(x1+90, y1+110, x1+90, y1+30)
-    MidPointLineAlgorithm(x1+100, y1+110, x1+100, y1+30)
-    MidPointLineAlgorithm(x1+130, y1+110, x1+130, y1+30)
-    MidPointLineAlgorithm(x1+30, y1+90, x1+130, y1+90)
-    MidPointLineAlgorithm(x1+30, y1+80, x1+130, y1+80)
-    MidPointLineAlgorithm(x1+30, y1+50, x1+130, y1+50)
-    MidPointLineAlgorithm(x1+30, y1+20, x1+130, y1+20)
-    glPointSize(3)
-    glColor3f(*color2)
-    MidPointLineAlgorithm(x1+25, y1+135, x1+17, y1+120)
-    MidPointLineAlgorithm(x1+17, y1+120, x1+17, y1+25)
-    glPointSize(8)
-    MidPointLineAlgorithm(x1+19, y1+120, x1+19, y1+25)
-    glPointSize(5)
-    MidPointLineAlgorithm(x1+25, y1+130, x1+25, y1+20)
-
-
-def buildHouses():
-    global houseHealth
-    global houseColors
-    # House Serial: Bottom Left to Top Left, then, Bottom Right to Top Right
-    # buildHouse(0, 0, 150, 0, 0, 150, 150, 150, [218/255, 165/255, 32/255], [184/255, 134/255, 30/255])
-    # buildHouse(0, 250, 150, 250, 0, 400, 150, 400, [255/255, 0/255, 128/255], [128/255, 0/255, 64/255])
-    # buildHouse(0, 500, 150, 500, 0, 650, 150, 650, [191/255, 0/255, 255/255], [115/255, 0/255, 153/255])
-    # buildHouse(650, 0, 800, 0, 650, 150, 800, 150, [51/255, 102/255, 255/255], [0/255, 45/255, 179/255])
-    # buildHouse(650, 250, 800, 250, 650, 400, 800, 400, [117/255, 117/255, 163/255], [71/255, 71/255, 107/255])
-    # buildHouse(650, 500, 800, 500, 650, 650, 800, 650, [138/255, 138/255, 92/255], [92/255, 92/255, 61/255])
-    buildHouse(0, 0, 150, 0, 0, 150, 150, 150, houseColors[0][0], houseColors[0][1])
-    buildHouse(0, 250, 150, 250, 0, 400, 150, 400, houseColors[1][0], houseColors[1][1])
-    buildHouse(0, 500, 150, 500, 0, 650, 150, 650, houseColors[2][0], houseColors[2][1])
-    buildHouse(650, 0, 800, 0, 650, 150, 800, 150, houseColors[3][0], houseColors[3][1])
-    buildHouse(650, 250, 800, 250, 650, 400, 800, 400, houseColors[4][0], houseColors[4][1])
-    buildHouse(650, 500, 800, 500, 650, 650, 800, 650, houseColors[5][0], houseColors[5][1])
-
-
-    # # House 1
-    # glPointSize(3)
-    # glColor3f(218/255, 165/255, 32/255)
-    # MidPointLineAlgorithm(25, 20, 25, 135)
-    # MidPointLineAlgorithm(25, 135, 135, 135)
-    # MidPointLineAlgorithm(135, 135, 135, 20)
-    # glPointSize(10)
-    # MidPointLineAlgorithm(30, 130, 130, 130)
-    # MidPointLineAlgorithm(30, 120, 130, 120)
-    # MidPointLineAlgorithm(30, 110, 30, 30)
-    # MidPointLineAlgorithm(60, 110, 60, 30)
-    # MidPointLineAlgorithm(70, 110, 70, 30)
-    # MidPointLineAlgorithm(80, 110, 80, 30)
-    # MidPointLineAlgorithm(90, 110, 90, 30)
-    # MidPointLineAlgorithm(100, 110, 100, 30)
-    # MidPointLineAlgorithm(130, 110, 130, 30)
-    # MidPointLineAlgorithm(30, 90, 130, 90)
-    # MidPointLineAlgorithm(30, 80, 130, 80)
-    # MidPointLineAlgorithm(30, 50, 130, 50)
-    # MidPointLineAlgorithm(30, 20, 130, 20)
-    # glPointSize(3)
-    # glColor3f(184/255, 134/255, 30/255)
-    # MidPointLineAlgorithm(25, 135, 17, 120)
-    # MidPointLineAlgorithm(17, 120, 17, 25)
-    # glPointSize(8)
-    # MidPointLineAlgorithm(19, 120, 19, 25)
-    # glPointSize(5)
-    # MidPointLineAlgorithm(25, 130, 25, 20)
-
-
-
-
-    # House 2
-
-
-
-
+houseHealth = [[25, 160, 25+house_li[0]['health'], 160], [25, 410, 25+house_li[1]['health'], 410], [25, 660, 25+house_li[2]['health'], 660], [670, 160, 670+house_li[3]['health'], 160], [670, 410, 670+house_li[4]['health'], 410], [670, 660, 670+house_li[5]['health'], 660]]
+#house_li[0]['cond']='fire'
+fireTimer = 100
+water = -1
+score = 0
+fast_travel_left = 3
 
 #################### Mid point line and circle algorithm:
 def drawPoint(x, y):
@@ -278,7 +126,6 @@ def drawPoints(x, y, dx, dy):
     drawPoint(-y+dx, -x+dy)
     drawPoint(y+dx, -x+dy)
 
-
 def MidPointCircleAlgorithm(x, y, r):
     x0 = 0
     y0 = r
@@ -294,34 +141,359 @@ def MidPointCircleAlgorithm(x, y, r):
             y0 -= 1
         drawPoints(x0, y0, x, y)
 
+###########################################################################
+def buildHouse(x1, y1, color1, color2):
+    glPointSize(3)
+    glColor3f(*color1)
+    MidPointLineAlgorithm(x1+25, y1+20, x1+25, y1+135)
+    MidPointLineAlgorithm(x1+25, y1+135, x1+135, y1+135)
+    MidPointLineAlgorithm(x1+135, y1+135, x1+135, y1+20)
+    glPointSize(10)
+    MidPointLineAlgorithm(x1+30, y1+130, x1+130, y1+130)
+    MidPointLineAlgorithm(x1+30, y1+120, x1+130, y1+120)
+    MidPointLineAlgorithm(x1+30, y1+110, x1+30, y1+30)
+    MidPointLineAlgorithm(x1+60, y1+110, x1+60, y1+30)
+    MidPointLineAlgorithm(x1+70, y1+110, x1+70, y1+30)
+    MidPointLineAlgorithm(x1+80, y1+110, x1+80, y1+30)
+    MidPointLineAlgorithm(x1+90, y1+110, x1+90, y1+30)
+    MidPointLineAlgorithm(x1+100, y1+110, x1+100, y1+30)
+    MidPointLineAlgorithm(x1+130, y1+110, x1+130, y1+30)
+    MidPointLineAlgorithm(x1+30, y1+90, x1+130, y1+90)
+    MidPointLineAlgorithm(x1+30, y1+80, x1+130, y1+80)
+    MidPointLineAlgorithm(x1+30, y1+50, x1+130, y1+50)
+    MidPointLineAlgorithm(x1+30, y1+20, x1+130, y1+20)
+    glPointSize(3)
+    glColor3f(*color2)
+    MidPointLineAlgorithm(x1+25, y1+135, x1+17, y1+120)
+    MidPointLineAlgorithm(x1+17, y1+120, x1+17, y1+25)
+    glPointSize(8)
+    MidPointLineAlgorithm(x1+19, y1+120, x1+19, y1+25)
+    glPointSize(5)
+    MidPointLineAlgorithm(x1+25, y1+130, x1+25, y1+20)
 
-#####################################
-def specialKeyListener(key, x, y):
-    global truck
-    if key == GLUT_KEY_UP:
-        if (truck[1] + 150 + 5 <= 800): 
-            truck[1] += 5
+def buildHouses():
+    global houseHealth
+    #global houseColors
+    global house_li
+    # House Serial: Bottom Left to Top Left, then, Bottom Right to Top Right
+    #buildHouse(0, 0,  houseColors[0][0], houseColors[0][1])
+    #buildHouse(0, 250,  houseColors[1][0], houseColors[1][1])
+    #buildHouse(0, 500,  houseColors[2][0], houseColors[2][1])
+    #buildHouse(650, 0,  houseColors[3][0], houseColors[3][1])
+    #buildHouse(650, 250,  houseColors[4][0], houseColors[4][1])
+    #buildHouse(650, 500,  houseColors[5][0], houseColors[5][1])
 
+    #buildHouse(house_li[0]['x'], house_li[0]['y'],  houseColors[0][0], houseColors[0][1])
+    #buildHouse(house_li[1]['x'], house_li[1]['y'],  houseColors[1][0], houseColors[1][1])
+    #buildHouse(house_li[2]['x'], house_li[2]['y'],  houseColors[2][0], houseColors[2][1])
+    #buildHouse(house_li[3]['x'], house_li[3]['y'],  houseColors[3][0], houseColors[3][1])
+    #buildHouse(house_li[4]['x'], house_li[4]['y'],  houseColors[4][0], houseColors[4][1])
+    #buildHouse(house_li[5]['x'], house_li[5]['y'],  houseColors[5][0], houseColors[5][1])
+
+    for house in house_li:
+        if(house['cond'] == 'fire'):
+            house['color'] = [[1,0,0],[0.4, 0, 0]] 
+            house['health'] -= 1  #1  #0.001
+            #print(house['health'])        
+
+        if(house['cond']=='fire' and house['health'] <= 5):
+            house['cond'] = 'burnt'     
+            house['health'] = 0
         
-    elif key == GLUT_KEY_DOWN:
-        if (truck[1] - 5 >= 0): 
-            truck[1] -= 5
+        if(house['cond'] == 'burnt'):
+            house['color'] = [[0.7,0.7,0.7],[0.7, 0.7, 0.7]]
 
-    elif key == GLUT_KEY_LEFT:
-        if (truck[0] - 10 >= 150): 
-            truck[0] -= 10
-   
+        buildHouse(house['x'], house['y'], house['color'][0], house['color'][1] )
+
+def showHouseHealth():
+    global houseHealth
+    for i in range(len(houseHealth)):
+        glPointSize(15)
+        glColor3f(1, 0, 0)
+        MidPointLineAlgorithm(houseHealth[i][0], houseHealth[i][1], houseHealth[i][2], houseHealth[i][3])
 
 
-    elif key == GLUT_KEY_RIGHT:
-        if (truck[0] + 80 + 10 <= 650): 
-            truck[0] += 10
+angle = 0
+def showTruck():
+    global angle, truck
+    tx=-40
+    ty=-75
+    glTranslatef(truck['x'], truck['y'], 0.0)  # change position from 0,0
+    glRotatef(angle, 0, 0, 1)  # change angle of object
+
+    glPointSize(5)
+    glColor3f(0, 0, 0)
+    MidPointCircleAlgorithm(tx, ty+30, 5)
+    MidPointCircleAlgorithm(tx, ty+15, 5)
+    MidPointCircleAlgorithm(tx, ty+80, 5)
+    MidPointCircleAlgorithm(tx, ty+95, 5)
+    MidPointCircleAlgorithm(tx+80, ty+30, 5)
+    MidPointCircleAlgorithm(tx+80, ty+15, 5)
+    MidPointCircleAlgorithm(tx+80, ty+80, 5)
+    MidPointCircleAlgorithm(tx+80, ty+95, 5)
+    glPointSize(4)
+    glColor3f(0, 0, 0)
+    MidPointLineAlgorithm(tx, ty, tx, ty+120)
+    MidPointLineAlgorithm(tx, ty+120, tx+80, ty+120)
+    MidPointLineAlgorithm(tx+80, ty+120, tx+80, ty)
+    MidPointLineAlgorithm(tx, ty, tx+80, ty)
+
+    glColor3f(179/255, 0, 0)
+    glPointSize(20)
+    MidPointLineAlgorithm(tx+10, ty+130, tx+10, ty+140)
+    MidPointLineAlgorithm(tx+30, ty+130, tx+30, ty+140)
+    MidPointLineAlgorithm(tx+50, ty+130, tx+50, ty+140)
+    MidPointLineAlgorithm(tx+70, ty+130, tx+70, ty+140)
+    glPointSize(5)
+    glColor3f(0, 0, 0)
+    MidPointLineAlgorithm(tx, ty+120, tx+80, ty+120)
+    MidPointLineAlgorithm(tx, ty+150, tx+80, ty+150)
+    MidPointLineAlgorithm(tx, ty+120, tx, ty+150)
+    MidPointLineAlgorithm(tx+80, ty+150, tx+80, ty+120)
+    glColor3f(204/255, 204/255, 204/255)
+    MidPointCircleAlgorithm(tx+10, ty+140, 3)
+    MidPointCircleAlgorithm(tx+70, ty+140, 3)
+
+    glPointSize(20)
+    glColor3f(200/255, 0, 0)
+    MidPointLineAlgorithm(tx+10, ty+5, tx+10, ty+105)
+    glColor3f(200/255, 0, 0) #
+    MidPointLineAlgorithm(tx+20, ty+5, tx+20, ty+105)
+    glColor3f(200/255, 0, 0)
+    MidPointLineAlgorithm(tx+30, ty+5, tx+30, ty+105)
+    glColor3f(200/255, 0, 0) #
+    MidPointLineAlgorithm(tx+40, ty+5, tx+40, ty+105)
+    glColor3f(200/255, 0, 0)
+    MidPointLineAlgorithm(tx+50, ty+5, tx+50, ty+105)
+    glColor3f(200/255, 0, 0) #
+    MidPointLineAlgorithm(tx+60, ty+5, tx+60, ty+105)
+    glColor3f(200/255, 0, 0)
+    MidPointLineAlgorithm(tx+70, ty+5, tx+70, ty+105)
+    glColor3f(200/255, 0, 0) #
+    MidPointLineAlgorithm(tx+60, ty+5, tx+60, ty+105)
+    glPointSize(5)
+    glColor3f(200/255, 51/255, 51/255)
+    MidPointCircleAlgorithm(tx+40, ty+135, 3)
+    glColor3f(0, 0, 0)
+
+
+    MidPointLineAlgorithm(tx+10, ty+105, tx+10, ty+10)
+    MidPointLineAlgorithm(tx+20, ty+105, tx+20, ty+10)
+    MidPointLineAlgorithm(tx+30, ty+105, tx+30, ty+10)
+    MidPointLineAlgorithm(tx+40, ty+105, tx+40, ty+10)
+    MidPointLineAlgorithm(tx+50, ty+105, tx+50, ty+10)
+    MidPointLineAlgorithm(tx+60, ty+105, tx+60, ty+10)
+    MidPointLineAlgorithm(tx+70, ty+105, tx+70, ty+10)
+
+    #glPointSize(5)
+    #glColor3f(0, 0, 0)
+    #MidPointCircleAlgorithm(truck['x'], truck['y']+30, 5)
+    #MidPointCircleAlgorithm(truck['x'], truck['y']+15, 5)
+    #MidPointCircleAlgorithm(truck['x'], truck['y']+80, 5)
+    #MidPointCircleAlgorithm(truck['x'], truck['y']+95, 5)
+    #MidPointCircleAlgorithm(truck['x']+80, truck['y']+30, 5)
+    #MidPointCircleAlgorithm(truck['x']+80, truck['y']+15, 5)
+    #MidPointCircleAlgorithm(truck['x']+80, truck['y']+80, 5)
+    #MidPointCircleAlgorithm(truck['x']+80, truck['y']+95, 5)
+    #glPointSize(4)
+    #glColor3f(0, 0, 0)
+    #MidPointLineAlgorithm(truck['x'], truck['y'], truck['x'], truck['y']+120)
+    #MidPointLineAlgorithm(truck['x'], truck['y']+120, truck['x']+80, truck['y']+120)
+    #MidPointLineAlgorithm(truck['x']+80, truck['y']+120, truck['x']+80, truck['y'])
+    #MidPointLineAlgorithm(truck['x'], truck['y'], truck['x']+80, truck['y'])
+
+    #glColor3f(179/255, 0, 0)
+    #glPointSize(20)
+    #MidPointLineAlgorithm(truck['x']+10, truck['y']+130, truck['x']+10, truck['y']+140)
+    #MidPointLineAlgorithm(truck['x']+30, truck['y']+130, truck['x']+30, truck['y']+140)
+    #MidPointLineAlgorithm(truck['x']+50, truck['y']+130, truck['x']+50, truck['y']+140)
+    #MidPointLineAlgorithm(truck['x']+70, truck['y']+130, truck['x']+70, truck['y']+140)
+    #glPointSize(5)
+    #glColor3f(0, 0, 0)
+    #MidPointLineAlgorithm(truck['x'], truck['y']+120, truck['x']+80, truck['y']+120)
+    #MidPointLineAlgorithm(truck['x'], truck['y']+150, truck['x']+80, truck['y']+150)
+    #MidPointLineAlgorithm(truck['x'], truck['y']+120, truck['x'], truck['y']+150)
+    #MidPointLineAlgorithm(truck['x']+80, truck['y']+150, truck['x']+80, truck['y']+120)
+    #glColor3f(204/255, 204/255, 204/255)
+    #MidPointCircleAlgorithm(truck['x']+10, truck['y']+140, 3)
+    #MidPointCircleAlgorithm(truck['x']+70, truck['y']+140, 3)
+
+    #glPointSize(20)
+    #glColor3f(200/255, 0, 0)
+    #MidPointLineAlgorithm(truck['x']+10, truck['y']+5, truck['x']+10, truck['y']+105)
+    #glColor3f(200/255, 0, 0) #
+    #MidPointLineAlgorithm(truck['x']+20, truck['y']+5, truck['x']+20, truck['y']+105)
+    #glColor3f(200/255, 0, 0)
+    #MidPointLineAlgorithm(truck['x']+30, truck['y']+5, truck['x']+30, truck['y']+105)
+    #glColor3f(200/255, 0, 0) #
+    #MidPointLineAlgorithm(truck['x']+40, truck['y']+5, truck['x']+40, truck['y']+105)
+    #glColor3f(200/255, 0, 0)
+    #MidPointLineAlgorithm(truck['x']+50, truck['y']+5, truck['x']+50, truck['y']+105)
+    #glColor3f(200/255, 0, 0) #
+    #MidPointLineAlgorithm(truck['x']+60, truck['y']+5, truck['x']+60, truck['y']+105)
+    #glColor3f(200/255, 0, 0)
+    #MidPointLineAlgorithm(truck['x']+70, truck['y']+5, truck['x']+70, truck['y']+105)
+    #glColor3f(200/255, 0, 0) #
+    #MidPointLineAlgorithm(truck['x']+60, truck['y']+5, truck['x']+60, truck['y']+105)
+    #glPointSize(5)
+    #glColor3f(200/255, 51/255, 51/255)
+    #MidPointCircleAlgorithm(truck['x']+40, truck['y']+135, 3)
+    #glColor3f(0, 0, 0)
+
+
+    #MidPointLineAlgorithm(truck['x']+10, truck['y']+105, truck['x']+10, truck['y']+10)
+    #MidPointLineAlgorithm(truck['x']+20, truck['y']+105, truck['x']+20, truck['y']+10)
+    #MidPointLineAlgorithm(truck['x']+30, truck['y']+105, truck['x']+30, truck['y']+10)
+    #MidPointLineAlgorithm(truck['x']+40, truck['y']+105, truck['x']+40, truck['y']+10)
+    #MidPointLineAlgorithm(truck['x']+50, truck['y']+105, truck['x']+50, truck['y']+10)
+    #MidPointLineAlgorithm(truck['x']+60, truck['y']+105, truck['x']+60, truck['y']+10)
+    #MidPointLineAlgorithm(truck['x']+70, truck['y']+105, truck['x']+70, truck['y']+10)
+
+def showWater():
+    #global angle, truck
+    ##glTranslatef(truck['x'], truck['y'], 0.0)  # change position from 0,0
+    #glRotatef(angle, 0, 0, 1)  # change angle of object
+    #tx=-40
+    #ty=-75
+    MidPointCircleAlgorithm(0, 110, 20)
+    MidPointCircleAlgorithm(-20, 140, 10)
+    MidPointCircleAlgorithm(20, 150, 15)
+    MidPointCircleAlgorithm(-5, 165, 13)
+
+
+#########################################################################################
+
+def specialKeyListener(key, x, y):
+    global angle, truck
+    if key==GLUT_KEY_RIGHT:
+        angle=-90
+        if(truck['x']+30 <= 580):
+            truck['x'] += 30
+        truck['direction'] = 'right'
+    if key== GLUT_KEY_LEFT:	 
+        angle=90
+        if(truck['x']-30 >= 220):
+            truck['x'] -= 30
+        truck['direction'] = 'left'
+    if key== GLUT_KEY_UP:	 
+        angle=0
+        truck['y'] += 30
+        truck['direction'] = 'up'
+    if key== GLUT_KEY_DOWN:	 
+        angle=180
+        truck['y'] -= 30
+        truck['direction'] = 'down'
+
+    #print(truck['direction'])
+    #print(truck['x'], truck['y'])
+    glutPostRedisplay()
+
+def keyboardListener(key, x, y):
+    global water
+    if key==b' ':
+        water = -water
+    glutPostRedisplay()
+
+def mouseListener(button, state, x, y):	
+    global truck, fast_travel_left
+    if button==GLUT_LEFT_BUTTON:
+        if(state == GLUT_DOWN):    
+            #print(x,y)	
+            if(x>=220 and x<=580 and fast_travel_left>0):
+                truck['x'] = x
+                truck['y'] = 800-y # convert mouse coordinate 
+                fast_travel_left-=1
+                print("Fast Travel Left:", fast_travel_left)
+
 
     glutPostRedisplay()
 
+def animate():
+    glutPostRedisplay()
+    global fireTimer, houseHealth, water, score  
+    
+    if(fireTimer<=0):
+        random_integer = random.randint(0, 5)
+        #print(random_integer)
+        house_li[random_integer]['cond'] = 'fire'
+        fireTimer=100
+    fireTimer -= 3  #0.0075
 
+    houseHealth = [[25, 160, 25+house_li[0]['health'], 160], [25, 410, 25+house_li[1]['health'], 410], [25, 660, 25+house_li[2]['health'], 660], [670, 160, 670+house_li[3]['health'], 160], [670, 410, 670+house_li[4]['health'], 410], [670, 660, 670+house_li[5]['health'], 660]]
 
+    # checking if water is inside house on fire
+    if(  (truck['y']<=130) and (truck['y']>=10) and (truck['direction']=='left') ):
+        if( (truck['x']<=310) and water==1 and house_li[0]['cond']!='burnt'):
+            #print("in")
+            if(house_li[0]['health'] <= 95):
+                house_li[0]['health'] += 3 #0.01
+                if(house_li[0]['health']>=95):
+                    house_li[0]['cond'] = 'normal'
+                    score += 1
+                    print('Score:', score)
+                    house_li[0]['health'] = 100
+                    house_li[0]['color'] = house_li[0]['originalColor']
+    
+    if(  (truck['y']<=400) and (truck['y']>=280) and (truck['direction']=='left') ):
+        if( (truck['x']<=310) and water==1 and house_li[1]['cond']!='burnt'):
+            #print("in")
+            if(house_li[1]['health'] <= 95):
+                house_li[1]['health'] += 3 #0.01
+                if(house_li[1]['health']>=95):
+                    house_li[1]['cond'] = 'normal'
+                    score += 1
+                    print('Score:',score)
+                    house_li[1]['health'] = 100
+                    house_li[1]['color'] = house_li[1]['originalColor']
 
+    if(  (truck['y']<=640) and (truck['y']>=520) and (truck['direction']=='left') ):
+        if( (truck['x']<=310) and water==1 and house_li[2]['cond']!='burnt'):
+            #print("in")
+            if(house_li[2]['health'] <= 95):
+                house_li[2]['health'] += 3 #0.01
+                if(house_li[2]['health']>=95):
+                    house_li[2]['cond'] = 'normal'
+                    score += 1
+                    print('Score:',score)
+                    house_li[2]['health'] = 100
+                    house_li[2]['color'] = house_li[2]['originalColor']
+
+    if(  (truck['y']<=130) and (truck['y']>=10) and (truck['direction']=='right') ):
+        if( (truck['x']>=490) and water==1 and house_li[3]['cond']!='burnt'):
+            #print("in")
+            if(house_li[3]['health'] <= 95):
+                house_li[3]['health'] += 3 #0.01
+                if(house_li[3]['health']>=95):
+                    house_li[3]['cond'] = 'normal'
+                    score += 1
+                    print('Score:',score)
+                    house_li[3]['health'] = 100
+                    house_li[3]['color'] = house_li[3]['originalColor']
+
+    if(  (truck['y']<=370) and (truck['y']>=250) and (truck['direction']=='right') ):
+        if( (truck['x']>=490) and water==1 and house_li[4]['cond']!='burnt'):
+            #print("in")
+            if(house_li[4]['health'] <= 95):
+                house_li[4]['health'] += 3 #0.01
+                if(house_li[4]['health']>=95):
+                    house_li[4]['cond'] = 'normal'
+                    score += 1
+                    print('Score:',score)
+                    house_li[4]['health'] = 100
+                    house_li[4]['color'] = house_li[4]['originalColor']
+    if(  (truck['y']<=640) and (truck['y']>=490) and (truck['direction']=='right') ):
+        if( (truck['x']>=490) and water==1 and house_li[5]['cond']!='burnt'):
+            #print("in")
+            if(house_li[5]['health'] <= 95):
+                house_li[5]['health'] += 3 #0.01
+                if(house_li[5]['health']>=95):
+                    house_li[5]['cond'] = 'normal'
+                    score += 1
+                    print('Score:',score)
+                    house_li[5]['health'] = 100
+                    house_li[5]['color'] = house_li[5]['originalColor']
+#house_li[4]['cond']='fire'
+#####################################################################################
 def iterate():
     glViewport(0, 0, 800, 800)
     glMatrixMode(GL_PROJECTION)
@@ -332,8 +504,9 @@ def iterate():
     
 
 def showScreen():
+    global water
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glClearColor(0, 128/255, 0, 1)
+    glClearColor(0/255, 100/255, 0/255, 1)  #(0, 128/255, 0, 1)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
     iterate()
@@ -347,9 +520,15 @@ def showScreen():
     glPointSize(3)
     glColor3f(179/255, 179/255, 179/255)
     MidPointLineAlgorithm(400, 700, 400, 5)
+
+    showHouseHealth()
     buildHouses()
     showTruck()
-    showHouseHealth()
+
+    if(water==1):
+        glColor3f(0.0, 0.9, 0.9)
+        showWater()
+    
 
     glutSwapBuffers()
 
@@ -359,6 +538,11 @@ glutInitDisplayMode(GLUT_RGBA)
 glutInitWindowSize(800, 800) #window size
 glutInitWindowPosition(700, 25)
 wind = glutCreateWindow(b"CSE423 project") #window name
+################################
 glutDisplayFunc(showScreen)
 glutSpecialFunc(specialKeyListener)
+glutIdleFunc(animate)
+glutKeyboardFunc(keyboardListener)
+glutMouseFunc(mouseListener)
+
 glutMainLoop()
