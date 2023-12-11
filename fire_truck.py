@@ -24,6 +24,7 @@ fireTimer = 100
 water = -1
 score = 0
 fast_travel_left = 3
+gameover = -1
 
 #################### Mid point line and circle algorithm:
 def drawPoint(x, y):
@@ -190,18 +191,20 @@ def buildHouses():
     #buildHouse(house_li[4]['x'], house_li[4]['y'],  houseColors[4][0], houseColors[4][1])
     #buildHouse(house_li[5]['x'], house_li[5]['y'],  houseColors[5][0], houseColors[5][1])
 
+    
     for house in house_li:
-        if(house['cond'] == 'fire'):
-            house['color'] = [[1,0,0],[0.4, 0, 0]] 
-            house['health'] -= 1  #1  #0.001
-            #print(house['health'])        
+        if(gameover==-1):
+            if(house['cond'] == 'fire'):
+                house['color'] = [[1,0,0],[0.4, 0, 0]] 
+                house['health'] -= 1  #1  #0.001
+                #print(house['health'])        
 
-        if(house['cond']=='fire' and house['health'] <= 5):
-            house['cond'] = 'burnt'     
-            house['health'] = 0
-        
-        if(house['cond'] == 'burnt'):
-            house['color'] = [[0.7,0.7,0.7],[0.7, 0.7, 0.7]]
+            if(house['cond']=='fire' and house['health'] <= 5):
+                house['cond'] = 'burnt'     
+                house['health'] = 0
+            
+            if(house['cond'] == 'burnt'):
+                house['color'] = [[0.7,0.7,0.7],[0.7, 0.7, 0.7]]
 
         buildHouse(house['x'], house['y'], house['color'][0], house['color'][1] )
 
@@ -238,7 +241,10 @@ def showTruck():
     MidPointLineAlgorithm(tx+80, ty+120, tx+80, ty)
     MidPointLineAlgorithm(tx, ty, tx+80, ty)
 
-    glColor3f(179/255, 0, 0)
+    if(gameover==-1):
+        glColor3f(179/255, 0, 0)
+    else:
+        glColor3f(0.2, 0.2, 0.2)
     glPointSize(20)
     MidPointLineAlgorithm(tx+10, ty+130, tx+10, ty+140)
     MidPointLineAlgorithm(tx+30, ty+130, tx+30, ty+140)
@@ -255,24 +261,30 @@ def showTruck():
     MidPointCircleAlgorithm(tx+70, ty+140, 3)
 
     glPointSize(20)
-    glColor3f(200/255, 0, 0)
+    if(gameover==-1):
+        glColor3f(200/255, 0, 0)
+    else:
+        glColor3f(0.2, 0.2, 0.2)
     MidPointLineAlgorithm(tx+10, ty+5, tx+10, ty+105)
-    glColor3f(200/255, 0, 0) #
+    #glColor3f(200/255, 0, 0) #
     MidPointLineAlgorithm(tx+20, ty+5, tx+20, ty+105)
-    glColor3f(200/255, 0, 0)
+    #glColor3f(200/255, 0, 0)
     MidPointLineAlgorithm(tx+30, ty+5, tx+30, ty+105)
-    glColor3f(200/255, 0, 0) #
+    #glColor3f(200/255, 0, 0) #
     MidPointLineAlgorithm(tx+40, ty+5, tx+40, ty+105)
-    glColor3f(200/255, 0, 0)
+    #glColor3f(200/255, 0, 0)
     MidPointLineAlgorithm(tx+50, ty+5, tx+50, ty+105)
-    glColor3f(200/255, 0, 0) #
+    #glColor3f(200/255, 0, 0) #
     MidPointLineAlgorithm(tx+60, ty+5, tx+60, ty+105)
-    glColor3f(200/255, 0, 0)
+    #glColor3f(200/255, 0, 0)
     MidPointLineAlgorithm(tx+70, ty+5, tx+70, ty+105)
-    glColor3f(200/255, 0, 0) #
+    #glColor3f(200/255, 0, 0) #
     MidPointLineAlgorithm(tx+60, ty+5, tx+60, ty+105)
     glPointSize(5)
-    glColor3f(200/255, 51/255, 51/255)
+    if(gameover==-1):
+        glColor3f(200/255, 51/255, 51/255)
+    else:
+        glColor3f(0.2, 0.2, 0.2)
     MidPointCircleAlgorithm(tx+40, ty+135, 3)
     glColor3f(0, 0, 0)
 
@@ -365,24 +377,26 @@ def showWater():
 
 def specialKeyListener(key, x, y):
     global angle, truck
-    if key==GLUT_KEY_RIGHT:
-        angle=-90
-        if(truck['x']+30 <= 580):
-            truck['x'] += 30
-        truck['direction'] = 'right'
-    if key== GLUT_KEY_LEFT:	 
-        angle=90
-        if(truck['x']-30 >= 220):
-            truck['x'] -= 30
-        truck['direction'] = 'left'
-    if key== GLUT_KEY_UP:	 
-        angle=0
-        truck['y'] += 30
-        truck['direction'] = 'up'
-    if key== GLUT_KEY_DOWN:	 
-        angle=180
-        truck['y'] -= 30
-        truck['direction'] = 'down'
+
+    if(gameover==-1):
+        if key==GLUT_KEY_RIGHT:
+            angle=-90
+            if(truck['x']+30 <= 580):
+                truck['x'] += 30
+            truck['direction'] = 'right'
+        if key== GLUT_KEY_LEFT:	 
+            angle=90
+            if(truck['x']-30 >= 220):
+                truck['x'] -= 30
+            truck['direction'] = 'left'
+        if key== GLUT_KEY_UP:	 
+            angle=0
+            truck['y'] += 30
+            truck['direction'] = 'up'
+        if key== GLUT_KEY_DOWN:	 
+            angle=180
+            truck['y'] -= 30
+            truck['direction'] = 'down'
 
     #print(truck['direction'])
     #print(truck['x'], truck['y'])
@@ -390,8 +404,9 @@ def specialKeyListener(key, x, y):
 
 def keyboardListener(key, x, y):
     global water
-    if key==b' ':
-        water = -water
+    if(gameover==-1):
+        if key==b' ':
+            water = -water
     glutPostRedisplay()
 
 def mouseListener(button, state, x, y):	
@@ -399,7 +414,7 @@ def mouseListener(button, state, x, y):
     if button==GLUT_LEFT_BUTTON:
         if(state == GLUT_DOWN):    
             #print(x,y)	
-            if(x>=220 and x<=580 and fast_travel_left>0):
+            if(x>=220 and x<=580 and fast_travel_left>0 and gameover==-1):
                 truck['x'] = x
                 truck['y'] = 800-y # convert mouse coordinate 
                 fast_travel_left-=1
@@ -411,87 +426,90 @@ def mouseListener(button, state, x, y):
 def animate():
     glutPostRedisplay()
     global fireTimer, houseHealth, water, score  
+
+    if(gameover==-1):
     
-    if(fireTimer<=0):
-        random_integer = random.randint(0, 5)
-        #print(random_integer)
-        house_li[random_integer]['cond'] = 'fire'
-        fireTimer=100
-    fireTimer -= 3  #0.0075
+        if(fireTimer<=0):
+            random_integer = random.randint(0, 5)
+            #print(random_integer)
+            house_li[random_integer]['cond'] = 'fire'
+            fireTimer=100
+        fireTimer -= 3  #0.0075
 
-    houseHealth = [[25, 160, 25+house_li[0]['health'], 160], [25, 410, 25+house_li[1]['health'], 410], [25, 660, 25+house_li[2]['health'], 660], [670, 160, 670+house_li[3]['health'], 160], [670, 410, 670+house_li[4]['health'], 410], [670, 660, 670+house_li[5]['health'], 660]]
+        houseHealth = [[25, 160, 25+house_li[0]['health'], 160], [25, 410, 25+house_li[1]['health'], 410], [25, 660, 25+house_li[2]['health'], 660], [670, 160, 670+house_li[3]['health'], 160], [670, 410, 670+house_li[4]['health'], 410], [670, 660, 670+house_li[5]['health'], 660]]
 
-    # checking if water is inside house on fire
-    if(  (truck['y']<=130) and (truck['y']>=10) and (truck['direction']=='left') ):
-        if( (truck['x']<=310) and water==1 and house_li[0]['cond']!='burnt'):
-            #print("in")
-            if(house_li[0]['health'] <= 95):
-                house_li[0]['health'] += 3 #0.01
-                if(house_li[0]['health']>=95):
-                    house_li[0]['cond'] = 'normal'
-                    score += 1
-                    print('Score:', score)
-                    house_li[0]['health'] = 100
-                    house_li[0]['color'] = house_li[0]['originalColor']
-    
-    if(  (truck['y']<=400) and (truck['y']>=280) and (truck['direction']=='left') ):
-        if( (truck['x']<=310) and water==1 and house_li[1]['cond']!='burnt'):
-            #print("in")
-            if(house_li[1]['health'] <= 95):
-                house_li[1]['health'] += 3 #0.01
-                if(house_li[1]['health']>=95):
-                    house_li[1]['cond'] = 'normal'
-                    score += 1
-                    print('Score:',score)
-                    house_li[1]['health'] = 100
-                    house_li[1]['color'] = house_li[1]['originalColor']
+        # checking if water is inside house on fire
+        if(  (truck['y']<=130) and (truck['y']>=10) and (truck['direction']=='left') ):
+            if( (truck['x']<=310) and water==1 and house_li[0]['cond']!='burnt'):
+                #print("in")
+                if(house_li[0]['health'] <= 95):
+                    house_li[0]['health'] += 3 #0.01
+                    if(house_li[0]['health']>=95):
+                        house_li[0]['cond'] = 'normal'
+                        score += 1
+                        print('Score:', score)
+                        house_li[0]['health'] = 100
+                        house_li[0]['color'] = house_li[0]['originalColor']
+        
+        if(  (truck['y']<=400) and (truck['y']>=280) and (truck['direction']=='left') ):
+            if( (truck['x']<=310) and water==1 and house_li[1]['cond']!='burnt'):
+                #print("in")
+                if(house_li[1]['health'] <= 95):
+                    house_li[1]['health'] += 3 #0.01
+                    if(house_li[1]['health']>=95):
+                        house_li[1]['cond'] = 'normal'
+                        score += 1
+                        print('Score:',score)
+                        house_li[1]['health'] = 100
+                        house_li[1]['color'] = house_li[1]['originalColor']
 
-    if(  (truck['y']<=640) and (truck['y']>=520) and (truck['direction']=='left') ):
-        if( (truck['x']<=310) and water==1 and house_li[2]['cond']!='burnt'):
-            #print("in")
-            if(house_li[2]['health'] <= 95):
-                house_li[2]['health'] += 3 #0.01
-                if(house_li[2]['health']>=95):
-                    house_li[2]['cond'] = 'normal'
-                    score += 1
-                    print('Score:',score)
-                    house_li[2]['health'] = 100
-                    house_li[2]['color'] = house_li[2]['originalColor']
+        if(  (truck['y']<=640) and (truck['y']>=520) and (truck['direction']=='left') ):
+            if( (truck['x']<=310) and water==1 and house_li[2]['cond']!='burnt'):
+                #print("in")
+                if(house_li[2]['health'] <= 95):
+                    house_li[2]['health'] += 3 #0.01
+                    if(house_li[2]['health']>=95):
+                        house_li[2]['cond'] = 'normal'
+                        score += 1
+                        print('Score:',score)
+                        house_li[2]['health'] = 100
+                        house_li[2]['color'] = house_li[2]['originalColor']
 
-    if(  (truck['y']<=130) and (truck['y']>=10) and (truck['direction']=='right') ):
-        if( (truck['x']>=490) and water==1 and house_li[3]['cond']!='burnt'):
-            #print("in")
-            if(house_li[3]['health'] <= 95):
-                house_li[3]['health'] += 3 #0.01
-                if(house_li[3]['health']>=95):
-                    house_li[3]['cond'] = 'normal'
-                    score += 1
-                    print('Score:',score)
-                    house_li[3]['health'] = 100
-                    house_li[3]['color'] = house_li[3]['originalColor']
+        if(  (truck['y']<=130) and (truck['y']>=10) and (truck['direction']=='right') ):
+            if( (truck['x']>=490) and water==1 and house_li[3]['cond']!='burnt'):
+                #print("in")
+                if(house_li[3]['health'] <= 95):
+                    house_li[3]['health'] += 3 #0.01
+                    if(house_li[3]['health']>=95):
+                        house_li[3]['cond'] = 'normal'
+                        score += 1
+                        print('Score:',score)
+                        house_li[3]['health'] = 100
+                        house_li[3]['color'] = house_li[3]['originalColor']
 
-    if(  (truck['y']<=370) and (truck['y']>=250) and (truck['direction']=='right') ):
-        if( (truck['x']>=490) and water==1 and house_li[4]['cond']!='burnt'):
-            #print("in")
-            if(house_li[4]['health'] <= 95):
-                house_li[4]['health'] += 3 #0.01
-                if(house_li[4]['health']>=95):
-                    house_li[4]['cond'] = 'normal'
-                    score += 1
-                    print('Score:',score)
-                    house_li[4]['health'] = 100
-                    house_li[4]['color'] = house_li[4]['originalColor']
-    if(  (truck['y']<=640) and (truck['y']>=490) and (truck['direction']=='right') ):
-        if( (truck['x']>=490) and water==1 and house_li[5]['cond']!='burnt'):
-            #print("in")
-            if(house_li[5]['health'] <= 95):
-                house_li[5]['health'] += 3 #0.01
-                if(house_li[5]['health']>=95):
-                    house_li[5]['cond'] = 'normal'
-                    score += 1
-                    print('Score:',score)
-                    house_li[5]['health'] = 100
-                    house_li[5]['color'] = house_li[5]['originalColor']
+        if(  (truck['y']<=370) and (truck['y']>=250) and (truck['direction']=='right') ):
+            if( (truck['x']>=490) and water==1 and house_li[4]['cond']!='burnt'):
+                #print("in")
+                if(house_li[4]['health'] <= 95):
+                    house_li[4]['health'] += 3 #0.01
+                    if(house_li[4]['health']>=95):
+                        house_li[4]['cond'] = 'normal'
+                        score += 1
+                        print('Score:',score)
+                        house_li[4]['health'] = 100
+                        house_li[4]['color'] = house_li[4]['originalColor']
+        if(  (truck['y']<=640) and (truck['y']>=490) and (truck['direction']=='right') ):
+            if( (truck['x']>=490) and water==1 and house_li[5]['cond']!='burnt'):
+                #print("in")
+                if(house_li[5]['health'] <= 95):
+                    house_li[5]['health'] += 3 #0.01
+                    if(house_li[5]['health']>=95):
+                        house_li[5]['cond'] = 'normal'
+                        score += 1
+                        print('Score:',score)
+                        house_li[5]['health'] = 100
+                        house_li[5]['color'] = house_li[5]['originalColor']
+
 #house_li[4]['cond']='fire'
 #####################################################################################
 def iterate():
@@ -503,8 +521,9 @@ def iterate():
     glLoadIdentity()
     
 
+printGameOver = 1
 def showScreen():
-    global water
+    global water, gameover, score, printGameOver
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glClearColor(0/255, 100/255, 0/255, 1)  #(0, 128/255, 0, 1)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -524,6 +543,17 @@ def showScreen():
     showHouseHealth()
     buildHouses()
     showTruck()
+
+    num_burnt = 0
+    for house in house_li:
+        if(house['cond'] == 'burnt'):
+            num_burnt += 1
+        if(num_burnt>=3):
+            gameover = 1
+            if(printGameOver==1):
+                print("Game Over!")
+                print('Score:', score)
+            printGameOver = 0
 
     if(water==1):
         glColor3f(0.0, 0.9, 0.9)
