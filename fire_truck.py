@@ -25,6 +25,9 @@ water = -1
 score = 0
 fast_travel_left = 3
 gameover = -1
+restart = -1
+speed = 0
+pause = -1
 
 #################### Mid point line and circle algorithm:
 def drawPoint(x, y):
@@ -173,7 +176,7 @@ def buildHouse(x1, y1, color1, color2):
     MidPointLineAlgorithm(x1+25, y1+130, x1+25, y1+20)
 
 def buildHouses():
-    global houseHealth
+    global houseHealth, pause, gameover
     #global houseColors
     global house_li
     # House Serial: Bottom Left to Top Left, then, Bottom Right to Top Right
@@ -193,7 +196,7 @@ def buildHouses():
 
     
     for house in house_li:
-        if(gameover==-1):
+        if(gameover==-1 and pause==-1):
             if(house['cond'] == 'fire'):
                 house['color'] = [[1,0,0],[0.4, 0, 0]] 
                 house['health'] -= 1  #1  #0.001
@@ -372,69 +375,105 @@ def showWater():
     MidPointCircleAlgorithm(20, 150, 15)
     MidPointCircleAlgorithm(-5, 165, 13)
 
+def show_cross():
+    MidPointLineAlgorithm(745, 745,  775, 775)
+    MidPointLineAlgorithm(775, 745,  745, 775)
+
+def show_restart():
+    #glColor3f(0.5, 1.0, 1.0)
+    MidPointLineAlgorithm(20, 760,  50, 760)
+    MidPointLineAlgorithm(20, 760,  35, 770)
+    MidPointLineAlgorithm(20, 760,  35, 750)
+
+def show_pause():
+    MidPointLineAlgorithm(395, 745,  395, 775)
+    MidPointLineAlgorithm(405, 745,  405, 775)
+
+def show_play():
+    MidPointLineAlgorithm(395, 745,  395, 775)
+    MidPointLineAlgorithm(395, 745,  415, 760)
+    MidPointLineAlgorithm(395, 775,  415, 760)
 
 #########################################################################################
 
 def specialKeyListener(key, x, y):
-    global angle, truck
+    global angle, truck, water, pause, gameover
 
-    if(gameover==-1):
+    if(gameover==-1 and pause==-1):
         if key==GLUT_KEY_RIGHT:
             angle=-90
             if(truck['x']+30 <= 580):
                 truck['x'] += 30
             truck['direction'] = 'right'
+            water = -1
         if key== GLUT_KEY_LEFT:	 
             angle=90
             if(truck['x']-30 >= 220):
                 truck['x'] -= 30
             truck['direction'] = 'left'
+            water = -1
         if key== GLUT_KEY_UP:	 
             angle=0
-            truck['y'] += 30
+            if(truck['y']+30 <= 650):
+                truck['y'] += 30
             truck['direction'] = 'up'
+            water = -1
         if key== GLUT_KEY_DOWN:	 
             angle=180
             truck['y'] -= 30
             truck['direction'] = 'down'
+            water = -1
 
     #print(truck['direction'])
     #print(truck['x'], truck['y'])
     glutPostRedisplay()
 
 def keyboardListener(key, x, y):
-    global water
-    if(gameover==-1):
+    global water, gameover, pause
+    if(gameover==-1 and pause==-1):
         if key==b' ':
             water = -water
     glutPostRedisplay()
 
 def mouseListener(button, state, x, y):	
-    global truck, fast_travel_left
+    global truck, fast_travel_left, score, restart, pause, gameover
     if button==GLUT_LEFT_BUTTON:
         if(state == GLUT_DOWN):    
             #print(x,y)	
-            if(x>=220 and x<=580 and fast_travel_left>0 and gameover==-1):
+            if(x>=220 and x<=580 and y>=150 and fast_travel_left>0 and gameover==-1 and pause==-1):
                 truck['x'] = x
                 truck['y'] = 800-y # convert mouse coordinate 
                 fast_travel_left-=1
-                print("Fast Travel Left:", fast_travel_left)
+            print("Fast Travel Left:", fast_travel_left)
 
+            #print(x, y)
+            if( x>730 and y<60 ):
+                print("Goodbye! Score:", score)
+                glutLeaveMainLoop()
+
+            if( x<=60 and y<=60 ): 
+                #print('in')
+                restart = 1
+            
+            if( x>378 and y<65 and x<420 ): 
+                #print('in')
+                pause = -pause
 
     glutPostRedisplay()
 
 def animate():
     glutPostRedisplay()
-    global fireTimer, houseHealth, water, score  
+    global fireTimer, houseHealth, water, score, fast_travel_left, gameover, truck, house_li, restart, printGameOver, speed, pause
+    speed += 0.005
 
-    if(gameover==-1):
+    if(gameover==-1 and pause==-1):
     
         if(fireTimer<=0):
             random_integer = random.randint(0, 5)
             #print(random_integer)
             house_li[random_integer]['cond'] = 'fire'
             fireTimer=100
-        fireTimer -= 3  #0.0075
+        fireTimer -= (3+speed)  #0.0075
 
         houseHealth = [[25, 160, 25+house_li[0]['health'], 160], [25, 410, 25+house_li[1]['health'], 410], [25, 660, 25+house_li[2]['health'], 660], [670, 160, 670+house_li[3]['health'], 160], [670, 410, 670+house_li[4]['health'], 410], [670, 660, 670+house_li[5]['health'], 660]]
 
@@ -510,6 +549,32 @@ def animate():
                         house_li[5]['health'] = 100
                         house_li[5]['color'] = house_li[5]['originalColor']
 
+
+    if(restart==1):
+        restart=-1
+        truck = {'x':400, 'y':400, 'direction':'up'}
+        gameover = -1
+
+        house_li = [
+            { 'x':0,'y':0, 'health':100, 'cond':'normal', 'color': [[218/255, 165/255, 32/255], [184/255, 134/255, 30/255]], 'originalColor': [[218/255, 165/255, 32/255], [184/255, 134/255, 30/255]]},
+            { 'x':0,'y':250, 'health':100, 'cond':'normal', 'color':[[255/255, 0/255, 128/255], [128/255, 0/255, 64/255]], 'originalColor':[[255/255, 0/255, 128/255], [128/255, 0/255, 64/255]]},
+            { 'x':0,'y':500, 'health':100, 'cond':'normal', 'color':[[191/255, 0/255, 255/255], [115/255, 0/255, 153/255]], 'originalColor':[[191/255, 0/255, 255/255], [115/255, 0/255, 153/255]] },
+            { 'x':650,'y':0, 'health':100, 'cond':'normal', 'color': [[51/255, 102/255, 255/255], [0/255, 45/255, 179/255]], 'originalColor':[[51/255, 102/255, 255/255], [0/255, 45/255, 179/255]]},
+            { 'x':650,'y':250, 'health':100, 'cond':'normal', 'color':[[138/255, 138/255, 92/255], [92/255, 92/255, 61/255]], 'originalColor':[[138/255, 138/255, 92/255], [92/255, 92/255, 61/255]] },
+            { 'x':650,'y':500, 'health':100, 'cond':'normal', 'color':[[117/255, 117/255, 163/255], [71/255, 71/255, 107/255]], 'originalColor':[[117/255, 117/255, 163/255], [71/255, 71/255, 107/255]] }
+        ]
+
+        houseHealth = [[25, 160, 25+house_li[0]['health'], 160], [25, 410, 25+house_li[1]['health'], 410], [25, 660, 25+house_li[2]['health'], 660], [670, 160, 670+house_li[3]['health'], 160], [670, 410, 670+house_li[4]['health'], 410], [670, 660, 670+house_li[5]['health'], 660]]
+        #house_li[0]['cond']='fire'
+        #fireTimer = 100
+        water = -1
+        score = 0
+        fast_travel_left = 3
+        gameover = -1
+        printGameOver = 1       
+        speed = 0
+
+
 #house_li[4]['cond']='fire'
 #####################################################################################
 def iterate():
@@ -525,7 +590,7 @@ printGameOver = 1
 def showScreen():
     global water, gameover, score, printGameOver
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glClearColor(0/255, 100/255, 0/255, 1)  #(0, 128/255, 0, 1)
+    glClearColor(0/255, 60/255, 40/255, 1)  #(0, 128/255, 0, 1)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
     iterate()
@@ -540,8 +605,19 @@ def showScreen():
     glColor3f(179/255, 179/255, 179/255)
     MidPointLineAlgorithm(400, 700, 400, 5)
 
+    glColor3f(1,0,0)
+    show_cross()
+    glColor3f(0.5, 1.0, 1.0)
+    show_restart()
+    if(pause==-1):
+        glColor3f(255/255, 140/255, 0)
+        show_pause()
+    elif(pause==1):
+        glColor3f(255/255, 140/255, 0)
+        show_play()    
     showHouseHealth()
     buildHouses()
+
     showTruck()
 
     num_burnt = 0
@@ -558,7 +634,7 @@ def showScreen():
     if(water==1):
         glColor3f(0.0, 0.9, 0.9)
         showWater()
-    
+
 
     glutSwapBuffers()
 
